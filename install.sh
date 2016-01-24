@@ -3,6 +3,7 @@ set -e
 git clone https://github.com/MichaelSnowden/unit_converter
 cd unit_converter
 mvn generate-sources
+mkdir src/main/resources
 sqlite3 src/main/resources/unit_converter.db < init.sql
 mvn clean compile assembly:single
 echo "#!/usr/bin/env bash" >> unit_converter.sh
