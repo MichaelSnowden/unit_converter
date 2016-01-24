@@ -24,7 +24,7 @@ public class QualifiedNumber {
         double result = 1.0;
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:unit_converter.db");
+            connection = getConnection();
             Statement statement = connection.createStatement();
             for (Map.Entry<String, Fraction> entry : units.entrySet()) {
                 String unit = entry.getKey();
@@ -55,11 +55,16 @@ public class QualifiedNumber {
         }
     }
 
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:" + getClass().getClassLoader().getResource("unit_converter" +
+                ".db").getPath());
+    }
+
     private Map<String, Fraction> flatten(Map<String, Fraction> map) {
         Connection connection = null;
         try {
             Map<String, Fraction> flattened = new HashMap<>();
-            connection = DriverManager.getConnection("jdbc:sqlite:unit_converter.db");
+            connection = getConnection();
             Statement statement = connection.createStatement();
             for (Map.Entry<String, Fraction> entry : map.entrySet()) {
                 String unit = entry.getKey();
@@ -130,7 +135,7 @@ public class QualifiedNumber {
         } else {
             builder.append(fraction);
         }
-        for (String unit: units.keySet().stream().sorted().collect(Collectors.toList())) {
+        for (String unit : units.keySet().stream().sorted().collect(Collectors.toList())) {
             Fraction power = units.get(unit);
             builder.append(" ").append(unit);
             if (!power.isOne()) {

@@ -16,10 +16,6 @@ public class Calculator {
         this.functionProvider = functionProvider;
     }
 
-//    public QualifiedNumber calculateTop(ArithmeticParser.ProgramContext context) {
-//        return calculate(context.expression());
-//    }
-
     public QualifiedNumber calculate(ArithmeticParser.ExpressionContext context) {
         if (context.op == null) {
             return calculate(context.term());
