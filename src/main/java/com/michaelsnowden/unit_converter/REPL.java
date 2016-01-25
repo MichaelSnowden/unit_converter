@@ -17,8 +17,7 @@ public class REPL {
 
         while (line != null && !line.trim().equals("quit")) {
             try {
-                Calculator calculator = new Calculator(new FunctionProviderFactory(new UnitsProviderImpl()).getDefaultFunctionProvider(),
-                        new UnitsProviderImpl());
+                Calculator calculator = new Calculator();
                 console.println(calculator.calculate(console.readLine()).toString());
             } catch (Exception e) {
                 String message = e.getMessage();
