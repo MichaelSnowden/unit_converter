@@ -19,6 +19,19 @@ public class Calculator {
     private final FunctionProvider functionProvider;
     private final UnitsProvider unitsProvider;
 
+    public Calculator() {
+        this(new FunctionProviderFactory(new UnitsProviderImpl()).getDefaultFunctionProvider(), new UnitsProviderImpl
+                ());
+    }
+
+    public Calculator(FunctionProvider functionProvider) {
+        this(functionProvider, new UnitsProviderImpl());
+    }
+
+    public Calculator(UnitsProvider unitsProvider) {
+        this(new FunctionProviderFactory(unitsProvider).getDefaultFunctionProvider(), unitsProvider);
+    }
+
     public Calculator(FunctionProvider functionProvider, UnitsProvider unitsProvider) {
         this.functionProvider = functionProvider;
         this.unitsProvider = unitsProvider;
