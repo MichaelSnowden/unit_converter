@@ -56,8 +56,7 @@ public class QualifiedNumber {
     }
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:" + getClass().getClassLoader().getResource("unit_converter" +
-                ".db").getPath());
+        return DriverManager.getConnection("jdbc:sqlite::resource:unit_converter.db");
     }
 
     private Map<String, Fraction> flatten(Map<String, Fraction> map) {
