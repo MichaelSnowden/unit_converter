@@ -15,6 +15,3 @@ buildNumber.properties
 *.iml
 out
 gen
-
-### SQL
-*.db
