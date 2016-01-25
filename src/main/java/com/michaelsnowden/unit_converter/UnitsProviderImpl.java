@@ -9,23 +9,48 @@ import java.util.stream.Stream;
  * @author michael.snowden
  */
 public class UnitsProviderImpl implements UnitsProvider {
-    Map<String, Map<String, Fraction>> derivedUnits;
-    Map<String, Double> conversionFactors;
-    Map<String, String> conversionSymbols;
+    private final Map<String, Map<String, Fraction>> derivedUnits;
+    private final Map<String, Double> factors;
+    private final Map<String, String> symbols;
 
     public UnitsProviderImpl() {
         derivedUnits = new HashMap<>();
-        Map<String, Fraction> units = new HashMap<>();
-        units.put("kg", new Fraction(1));
-        units.put("m", new Fraction(1));
-        units.put("s", new Fraction(-2));
-        derivedUnits.put("N", units);
+        Map<String, Fraction> derivedUnit;
 
-        conversionFactors = new HashMap<>();
-        conversionFactors.put("g", 1 / 1000.0);
+        derivedUnit = new HashMap<>();
+        derivedUnit.put("kg", new Fraction(1));
+        derivedUnit.put("m", new Fraction(1));
+        derivedUnit.put("s", new Fraction(-2));
+        derivedUnits.put("N", derivedUnit);
 
-        conversionSymbols = new HashMap<>();
-        conversionSymbols.put("g", "kg");
+        derivedUnit = new HashMap<>();
+        derivedUnit.put("s", new Fraction(-1));
+        derivedUnits.put("Hz", derivedUnit);
+
+        derivedUnit = new HashMap<>();
+        derivedUnit.put("m", new Fraction(-1));
+        derivedUnit.put("kg", new Fraction(1));
+        derivedUnit.put("s", new Fraction(-2));
+        derivedUnits.put("Pa", derivedUnit);
+
+        derivedUnit = new HashMap<>();
+        derivedUnit.put("m", new Fraction(2));
+        derivedUnit.put("kg", new Fraction(1));
+        derivedUnit.put("s", new Fraction(-2));
+        derivedUnits.put("J", derivedUnit);
+
+        derivedUnit = new HashMap<>();
+        derivedUnit.put("m", new Fraction(2));
+        derivedUnit.put("kg", new Fraction(1));
+        derivedUnit.put("s", new Fraction(-3));
+        derivedUnits.put("W", derivedUnit);
+
+        factors = new HashMap<>();
+        factors.put("g", 1 / 1000.0);
+        factors.put("ms", 1 / 1000.0);
+
+        symbols = new HashMap<>();
+        symbols.put("g", "kg");
     }
 
     @Override
@@ -39,11 +64,11 @@ public class UnitsProviderImpl implements UnitsProvider {
 
     @Override
     public Double conversionFactor(String key, Fraction value) {
-        return Math.pow(conversionFactors.getOrDefault(key, 1.0), value.getDouble());
+        return Math.pow(factors.getOrDefault(key, 1.0), value.getDouble());
     }
 
     @Override
     public String conversionSymbol(String key) {
-        return conversionSymbols.getOrDefault(key, key);
+        return symbols.getOrDefault(key, key);
     }
 }
