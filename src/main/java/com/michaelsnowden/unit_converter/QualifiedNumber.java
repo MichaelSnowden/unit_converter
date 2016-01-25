@@ -1,6 +1,5 @@
 package com.michaelsnowden.unit_converter;
 
-import java.sql.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,50 +42,6 @@ public class QualifiedNumber {
                         e -> unitsProvider.conversionSymbol(e.getKey()),
                         Map.Entry::getValue
                 ));
-    }
-
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite::resource:unit_converter.db");
-    }
-
-    private Map<String, Fraction> flatten(Map<String, Fraction> map) {
-        Connection connection = null;
-        try {
-            Map<String, Fraction> flattened = new HashMap<>();
-            connection = getConnection();
-            Statement statement = connection.createStatement();
-            for (Map.Entry<String, Fraction> entry : map.entrySet()) {
-                String unit = entry.getKey();
-                Fraction power = entry.getValue();
-                ResultSet resultSet;
-                resultSet = statement.executeQuery("SELECT * FROM si_derived_unit WHERE " +
-                        "derived_symbol = '" + unit + "'");
-                if (resultSet.next()) {
-                    resultSet = statement.executeQuery("SELECT base_symbol, numerator, denominator FROM " +
-                            "component WHERE derived_symbol = '" + unit + "'");
-                    while (resultSet.next()) {
-                        String baseSymbol = resultSet.getString("base_symbol");
-                        int numerator = resultSet.getInt("numerator");
-                        int denominator = resultSet.getInt("denominator");
-                        flattened.put(baseSymbol, new Fraction(numerator, denominator));
-                    }
-                } else {
-                    flattened.put(unit, power);
-                }
-            }
-            return flattened;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return map;
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     public QualifiedNumber plus(QualifiedNumber number) {
