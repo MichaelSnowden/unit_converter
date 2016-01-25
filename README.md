@@ -42,7 +42,7 @@ Calculator calculator = new Calculator();
 console.println(calculator.calculate(line).toString());
 ```
 
-`com.michaelsnowden.unit_converter.REPL` is a good place to look for an example usage.
+[`com.michaelsnowden.unit_converter.REPL`](https://github.com/MichaelSnowden/unit_converter/blob/master/src/main/java/com/michaelsnowden/unit_converter/REPL.java) is a good place to look for an example usage.
 
 If you want to add units (I haven't added them all), then try constructing the `Calculator` with your own `UnitsProvider`.
 
