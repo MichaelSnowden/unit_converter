@@ -85,14 +85,6 @@ public class QualifiedNumber {
         return builder.toString();
     }
 
-    public QualifiedNumber sine() {
-        return new QualifiedNumber(Math.sin(getValue()), getUnits(), unitsProvider);
-    }
-
-    public QualifiedNumber cosine() {
-        return new QualifiedNumber(Math.cos(getValue()), getUnits(), unitsProvider);
-    }
-
     public QualifiedNumber raisedTo(QualifiedNumber number) {
         if (!number.isUnitless()) {
             throw new IllegalArgumentException("Exponents cannot have units");

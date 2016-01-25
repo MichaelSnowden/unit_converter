@@ -6,10 +6,10 @@ import java.util.List;
 /**
  * @author michael.snowden
  */
-public class CosineFunction implements Function {
+public class SinFunction implements Function {
     private final UnitsProvider unitsProvider;
 
-    public CosineFunction(UnitsProvider unitsProvider) {
+    public SinFunction(UnitsProvider unitsProvider) {
         this.unitsProvider = unitsProvider;
     }
 
