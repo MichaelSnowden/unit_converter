@@ -26,11 +26,13 @@ Add this to your `pom.xml`
     </repository>
 </repositories>
 
-<dependency>
-    <groupId>com.github.MichaelSnowden</groupId>
-    <artifactId>unit_converter</artifactId>
-    <version>4e0b67e</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>com.github.MichaelSnowden</groupId>
+        <artifactId>unit_converter</artifactId>
+        <version>4e0b67e</version>
+    </dependency>
+</dependencies>
 ```
 
 Then start with the `Calculator` class.
