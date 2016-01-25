@@ -38,6 +38,6 @@ public class ArithmeticTest {
     private ArithmeticParser getParser() throws IOException {
         return new ArithmeticParser(new CommonTokenStream(new ArithmeticLexer(new
                 ANTLRInputStream(getClass().getClassLoader
-                ().getResourceAsStream("test.uc")))));
+                ().getResourceAsStream("test.unit_converter")))));
     }
 }
