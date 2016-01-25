@@ -153,7 +153,7 @@ $ curl https://michael-snowden.herokuapp.com/calculate?expression=2kg%20%2B%202g
 2.002 kg
 ```
 
-# REST API (jQuery)
+## REST API (jQuery)
 This won't work on the GitHub page because of a security policy directive)
 ```
 var expression = encodeURI("2kg * 3 N^2");
