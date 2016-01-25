@@ -29,7 +29,8 @@ public class ArithmeticTest {
     public void testSemantics() throws Exception {
         ArithmeticParser parser = getParser();
         ArithmeticParser.ExpressionContext program = parser.expression();
-        Calculator calculator = new Calculator(new FunctionProviderFactory().getDefaultFunctionProvider());
+        UnitsProviderImpl unitsProvider = new UnitsProviderImpl();
+        Calculator calculator = new Calculator(new FunctionProviderFactory(unitsProvider).getDefaultFunctionProvider(), unitsProvider);
         QualifiedNumber qualifiedNumber = calculator.calculate(program);
         Assert.assertEquals(qualifiedNumber.getValue(), 2016.0);
     }

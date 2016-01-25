@@ -90,4 +90,8 @@ public class Fraction {
     public boolean isOne() {
         return n == 1 && d == 1;
     }
+
+    public boolean isNotZero() {
+        return n != 0;
+    }
 }

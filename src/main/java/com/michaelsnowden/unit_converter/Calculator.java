@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
  */
 public class Calculator {
 
-    private FunctionProvider functionProvider;
+    private final FunctionProvider functionProvider;
+    private final UnitsProvider unitsProvider;
 
-    public Calculator(FunctionProvider functionProvider) {
+    public Calculator(FunctionProvider functionProvider, UnitsProvider unitsProvider) {
         this.functionProvider = functionProvider;
+        this.unitsProvider = unitsProvider;
     }
 
     public QualifiedNumber calculate(ArithmeticParser.ExpressionContext context) {
@@ -29,7 +31,7 @@ public class Calculator {
 
     private QualifiedNumber calculate(ArithmeticParser.TermContext context) {
         if (context.term().size() == 0) {
-            return calculate(context.factor()).times(new QualifiedNumber(Math.pow(-1, context.NEG().size())));
+            return calculate(context.factor()).times(new QualifiedNumber(Math.pow(-1, context.NEG().size()), new HashMap<>(), unitsProvider));
         }
         if (context.op == null) {
             return calculate(context.term(0)).times(calculate(context.factor()));
@@ -52,14 +54,14 @@ public class Calculator {
             return calculate(context.expression());
         } else {
             return calculate(context.factor(0)).raisedTo(calculate(context.factor(1)).times(new QualifiedNumber(Math
-                    .pow(-1, context.NEG().size()))));
+                                .pow(-1, context.NEG().size()), new HashMap<>(), unitsProvider)));
         }
     }
 
     private QualifiedNumber calculate(ArithmeticParser.StringContext context) {
         Map<String, Fraction> units = new HashMap<>();
         units.put(context.getText(), new Fraction(1, 1));
-        return new QualifiedNumber(1.0, units);
+        return new QualifiedNumber(1.0, units, unitsProvider);
     }
 
     private QualifiedNumber calculate(ArithmeticParser.FunctionContext context) {
@@ -80,6 +82,6 @@ public class Calculator {
         } else {
             value = Double.parseDouble(context.FLOAT().getText());
         }
-        return new QualifiedNumber(value, new HashMap<>());
+        return new QualifiedNumber(value, new HashMap<>(), unitsProvider);
     }
 }

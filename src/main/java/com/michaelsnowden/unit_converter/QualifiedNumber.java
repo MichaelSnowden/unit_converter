@@ -1,9 +1,11 @@
 package com.michaelsnowden.unit_converter;
 
 import java.sql.*;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author michael.snowden
@@ -11,48 +13,36 @@ import java.util.stream.Collectors;
 public class QualifiedNumber {
     private final double value;
     private final Map<String, Fraction> units;
+    private final UnitsProvider unitsProvider;
 
-    public QualifiedNumber(double value, Map<String, Fraction> units) {
-        this.units = flatten(units.entrySet()
+    public QualifiedNumber(double value, Map<String, Fraction> units, UnitsProvider unitsProvider) {
+        this.unitsProvider = unitsProvider;
+        units = units.entrySet()
                 .stream()
-                .filter(e -> e.getValue().getN() != 0)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        this.value = value * convertToSi();
-    }
-
-    private double convertToSi() {
-        double result = 1.0;
-        Connection connection = null;
-        try {
-            connection = getConnection();
-            Statement statement = connection.createStatement();
-            for (Map.Entry<String, Fraction> entry : units.entrySet()) {
-                String unit = entry.getKey();
-                Fraction power = entry.getValue();
-                ResultSet resultSet;
-                resultSet = statement.executeQuery("SELECT scalar, si FROM base_unit WHERE " +
-                        "symbol = '" + unit + "'");
-                if (resultSet.next()) {
-                    double scalar = resultSet.getDouble("scalar");
-                    String si = resultSet.getString("si");
-                    units.remove(unit);
-                    units.put(si, power);
-                    result *= Math.pow(scalar, power.getDouble());
-                }
-            }
-            return result;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return result;
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+                .map(e -> unitsProvider.decompose(e.getKey(), e.getValue()))
+                .reduce(new HashMap<>(), (m1, m2) -> Stream.of(m1, m2)
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                Fraction::plus
+                        )))
+                .entrySet()
+                .stream()
+                .filter(e -> e.getValue().isNotZero())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        this.value = value * units
+                .entrySet()
+                .stream()
+                .map(e -> unitsProvider.conversionFactor(e.getKey(), e.getValue()))
+                .reduce(1.0, (a, b) -> a * b);
+        this.units = units.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        e -> unitsProvider.conversionSymbol(e.getKey()),
+                        Map.Entry::getValue
+                ));
     }
 
     private Connection getConnection() throws SQLException {
@@ -99,18 +89,14 @@ public class QualifiedNumber {
         }
     }
 
-    public QualifiedNumber(double value) {
-        this(value, new HashMap<>());
-    }
-
     public QualifiedNumber plus(QualifiedNumber number) {
         verifySameUnits(number);
-        return new QualifiedNumber(value + number.getValue(), getUnits());
+        return new QualifiedNumber(value + number.getValue(), getUnits(), unitsProvider);
     }
 
     public QualifiedNumber minus(QualifiedNumber number) {
         verifySameUnits(number);
-        return new QualifiedNumber(value - number.getValue(), getUnits());
+        return new QualifiedNumber(value - number.getValue(), getUnits(), unitsProvider);
     }
 
     public Map<String, Fraction> getUnits() {
@@ -132,7 +118,7 @@ public class QualifiedNumber {
         if (fraction.getD() == 1) {
             builder.append(fraction.getN());
         } else {
-            builder.append(fraction);
+            builder.append(fraction.getDouble());
         }
         for (String unit : units.keySet().stream().sorted().collect(Collectors.toList())) {
             Fraction power = units.get(unit);
@@ -145,11 +131,11 @@ public class QualifiedNumber {
     }
 
     public QualifiedNumber sine() {
-        return new QualifiedNumber(Math.sin(getValue()), getUnits());
+        return new QualifiedNumber(Math.sin(getValue()), getUnits(), unitsProvider);
     }
 
     public QualifiedNumber cosine() {
-        return new QualifiedNumber(Math.cos(getValue()), getUnits());
+        return new QualifiedNumber(Math.cos(getValue()), getUnits(), unitsProvider);
     }
 
     public QualifiedNumber raisedTo(QualifiedNumber number) {
@@ -160,11 +146,11 @@ public class QualifiedNumber {
         for (String unit : this.units.keySet()) {
             units.put(unit, this.units.get(unit).times(new Fraction(number.getValue())));
         }
-        return new QualifiedNumber(Math.pow(getValue(), number.getValue()), units);
+        return new QualifiedNumber(Math.pow(getValue(), number.getValue()), units, unitsProvider);
     }
 
     public QualifiedNumber negated() {
-        return new QualifiedNumber(-getValue(), getUnits());
+        return new QualifiedNumber(-getValue(), getUnits(), unitsProvider);
     }
 
     public QualifiedNumber dividedBy(QualifiedNumber number) {
@@ -175,18 +161,15 @@ public class QualifiedNumber {
             }
             units.put(s, units.get(s).minus(number.getUnits().get(s)));
         }
-        return new QualifiedNumber(value / number.getValue(), units);
+        return new QualifiedNumber(value / number.getValue(), units, unitsProvider);
     }
 
     public QualifiedNumber times(QualifiedNumber number) {
-        Map<String, Fraction> units = new HashMap<>(getUnits());
-        for (String s : number.getUnits().keySet()) {
-            if (units.get(s) == null) {
-                units.put(s, new Fraction(0, 1));
-            }
-            units.put(s, units.get(s).plus(number.getUnits().get(s)));
-        }
-        return new QualifiedNumber(value * number.getValue(), units);
+        Map<String, Fraction> units = Stream.of(this.units, number.getUnits())
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Fraction::plus));
+        return new QualifiedNumber(value * number.getValue(), units, unitsProvider);
     }
 
     private void verifySameUnits(QualifiedNumber number) {
@@ -198,5 +181,9 @@ public class QualifiedNumber {
                 throw new IllegalArgumentException("Cannot add numbers with different dimensions");
             }
         }
+    }
+
+    public UnitsProvider getUnitsProvider() {
+        return unitsProvider;
     }
 }

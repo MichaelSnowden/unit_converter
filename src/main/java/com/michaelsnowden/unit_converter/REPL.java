@@ -37,7 +37,8 @@ public class REPL {
                 parser.removeErrorListeners();
                 parser.addErrorListener(errorListener);
                 ArithmeticParser.ExpressionContext expression = parser.expression();
-                Calculator calculator = new Calculator(new FunctionProviderFactory().getDefaultFunctionProvider());
+                Calculator calculator = new Calculator(new FunctionProviderFactory(new UnitsProviderImpl()).getDefaultFunctionProvider(),
+                        new UnitsProviderImpl());
                 console.println(calculator.calculate(expression).toString());
             } catch (Exception e) {
                 String message = e.getMessage();
