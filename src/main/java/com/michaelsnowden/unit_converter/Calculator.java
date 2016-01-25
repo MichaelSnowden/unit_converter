@@ -1,5 +1,11 @@
 package com.michaelsnowden.unit_converter;
 
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.misc.Nullable;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +24,25 @@ public class Calculator {
         this.unitsProvider = unitsProvider;
     }
 
+    public QualifiedNumber calculate(String string) throws IOException {
+        BaseErrorListener errorListener = new BaseErrorListener() {
+            @Override
+            public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol,
+                                    int line, int charPositionInLine, @NotNull String msg, @Nullable
+                                    RecognitionException e) {
+                throw new IllegalArgumentException("line " + line + ":" + charPositionInLine + " " + msg);
+            }
+        };
+        ArithmeticLexer lexer = new ArithmeticLexer(new
+                ANTLRInputStream(new ByteArrayInputStream(string.getBytes())));
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(errorListener);
+        ArithmeticParser parser = new ArithmeticParser(new CommonTokenStream(lexer));
+        parser.removeErrorListeners();
+        parser.addErrorListener(errorListener);
+        return calculate(parser.expression());
+    }
+
     public QualifiedNumber calculate(ArithmeticParser.ExpressionContext context) {
         if (context.op == null) {
             return calculate(context.term());
@@ -31,7 +56,8 @@ public class Calculator {
 
     private QualifiedNumber calculate(ArithmeticParser.TermContext context) {
         if (context.term().size() == 0) {
-            return calculate(context.factor()).times(new QualifiedNumber(Math.pow(-1, context.NEG().size()), new HashMap<>(), unitsProvider));
+            return calculate(context.factor()).times(new QualifiedNumber(Math.pow(-1, context.NEG().size()), new
+                    HashMap<>(), unitsProvider));
         }
         if (context.op == null) {
             return calculate(context.term(0)).times(calculate(context.factor()));
@@ -54,7 +80,7 @@ public class Calculator {
             return calculate(context.expression());
         } else {
             return calculate(context.factor(0)).raisedTo(calculate(context.factor(1)).times(new QualifiedNumber(Math
-                                .pow(-1, context.NEG().size()), new HashMap<>(), unitsProvider)));
+                    .pow(-1, context.NEG().size()), new HashMap<>(), unitsProvider)));
         }
     }
 
