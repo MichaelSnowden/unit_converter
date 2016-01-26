@@ -21,6 +21,7 @@
             $("form").submit(function (event) {
                 event.preventDefault();
                 var expression = encodeURI($("#expression").val());
+                $("#result").val("Loading...");
                 $.get("https://michael-snowden.herokuapp.com/calculate?expression=" + expression, function (data) {
                     $("#result").val(data);
                 });
