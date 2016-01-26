@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Unit converter by MichaelSnowden</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="without-description">
+        <h1>Unit converter</h1>
+        <p></p>
+        <p class="view"><a href="https://github.com/MichaelSnowden/unit_converter">View the Project on GitHub <small>MichaelSnowden/unit_converter</small></a></p>
+        <ul>
+          <li><a href="https://github.com/MichaelSnowden/unit_converter/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/MichaelSnowden/unit_converter/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/MichaelSnowden/unit_converter">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="unit-converter" class="anchor" href="#unit-converter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Unit Converter</h1>
+
+<h2>
+<a id="command-line-installation" class="anchor" href="#command-line-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Command-Line Installation</h2>
+
+<div class="highlight highlight-source-shell"><pre>curl -s https://raw.githubusercontent.com/MichaelSnowden/unit_converter/master/install.sh <span class="pl-k">|</span> sh</pre></div>
+
+<h2>
+<a id="command-line-usage" class="anchor" href="#command-line-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Command-Line Usage</h2>
+
+<div class="highlight highlight-source-shell"><pre>$ unit_converter
+uc<span class="pl-k">&gt;</span> 400 kg <span class="pl-k">*</span> 9.8 m/s^2
+3920 kg m s^-2
+uc<span class="pl-k">&gt;</span> 3.9 N <span class="pl-k">*</span> 10 m
+39 kg m^2 s^-2
+uc<span class="pl-k">&gt;</span> quit
+$</pre></div>
+
+<h2>
+<a id="maven-integration" class="anchor" href="#maven-integration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Maven Integration</h2>
+
+<p>Add this to your <code>pom.xml</code></p>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">repositories</span>&gt;
+    &lt;<span class="pl-ent">repository</span>&gt;
+        &lt;<span class="pl-ent">id</span>&gt;jitpack.io&lt;/<span class="pl-ent">id</span>&gt;
+        &lt;<span class="pl-ent">url</span>&gt;https://jitpack.io&lt;/<span class="pl-ent">url</span>&gt;
+    &lt;/<span class="pl-ent">repository</span>&gt;
+&lt;/<span class="pl-ent">repositories</span>&gt;
+
+&lt;<span class="pl-ent">dependencies</span>&gt;
+    &lt;<span class="pl-ent">dependency</span>&gt;
+        &lt;<span class="pl-ent">groupId</span>&gt;com.github.MichaelSnowden&lt;/<span class="pl-ent">groupId</span>&gt;
+        &lt;<span class="pl-ent">artifactId</span>&gt;unit_converter&lt;/<span class="pl-ent">artifactId</span>&gt;
+        &lt;<span class="pl-ent">version</span>&gt;4e0b67e&lt;/<span class="pl-ent">version</span>&gt;
+    &lt;/<span class="pl-ent">dependency</span>&gt;
+&lt;/<span class="pl-ent">dependencies</span>&gt;</pre></div>
+
+<p>Then start with the <code>Calculator</code> class.</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">Calculator</span> calculator <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Calculator</span>();
+console<span class="pl-k">.</span>println(calculator<span class="pl-k">.</span>calculate(line)<span class="pl-k">.</span>toString());</pre></div>
+
+<p><a href="https://github.com/MichaelSnowden/unit_converter/blob/master/src/main/java/com/michaelsnowden/unit_converter/REPL.java"><code>com.michaelsnowden.unit_converter.REPL</code></a> is a good place to look for an example usage.</p>
+
+<p>If you want to add units (I haven't added them all), then try constructing the <code>Calculator</code> with your own <code>UnitsProvider</code>.</p>
+
+<p>Here is an example taken directly from a webiste I have which uses this repo.</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">Connection</span> connection <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+<span class="pl-smi">Connection</span> connection <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+<span class="pl-k">try</span> {
+    connection <span class="pl-k">=</span> <span class="pl-smi">DatabaseUrl</span><span class="pl-k">.</span>extract()<span class="pl-k">.</span>getConnection();
+<span class="pl-c">//                connection = DriverManager.getConnection("jdbc:sqlite:test.db");</span>
+
+    <span class="pl-smi">Statement</span> stmt <span class="pl-k">=</span> connection<span class="pl-k">.</span>createStatement();
+    stmt<span class="pl-k">.</span>executeUpdate(<span class="pl-s"><span class="pl-pds">"</span>CREATE TABLE IF NOT EXISTS base (si TEXT, sym TEXT, scalar REAL)<span class="pl-pds">"</span></span>);
+    stmt<span class="pl-k">.</span>executeUpdate(<span class="pl-s"><span class="pl-pds">"</span>CREATE TABLE IF NOT EXISTS comp (deriv TEXT, base TEXT, n INT , d INT)<span class="pl-pds">"</span></span>);
+    <span class="pl-k">if</span> (<span class="pl-k">!</span>stmt<span class="pl-k">.</span>executeQuery(<span class="pl-s"><span class="pl-pds">"</span>SELECT * FROM base<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>next()) {
+        stmt<span class="pl-k">.</span>executeUpdate(<span class="pl-s"><span class="pl-pds">"</span>INSERT INTO base VALUES ('kg', 'g', <span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-c1">1</span> <span class="pl-k">/</span> <span class="pl-c1">1000.0</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>)<span class="pl-pds">"</span></span>);
+        stmt<span class="pl-k">.</span>executeUpdate(<span class="pl-s"><span class="pl-pds">"</span>INSERT INTO base VALUES ('s', 'ms', <span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-c1">1</span> <span class="pl-k">/</span> <span class="pl-c1">1000.0</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>)<span class="pl-pds">"</span></span>);
+        stmt<span class="pl-k">.</span>executeUpdate(<span class="pl-s"><span class="pl-pds">"</span>INSERT INTO base VALUES ('ml', 'l', <span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-c1">1</span> <span class="pl-k">/</span> <span class="pl-c1">1000.0</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>)<span class="pl-pds">"</span></span>);
+    }
+    <span class="pl-k">if</span> (<span class="pl-k">!</span>stmt<span class="pl-k">.</span>executeQuery(<span class="pl-s"><span class="pl-pds">"</span>SELECT * FROM comp<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>next()) {
+        stmt<span class="pl-k">.</span>executeUpdate(<span class="pl-s"><span class="pl-pds">"</span>INSERT INTO comp VALUES ('N', 'kg', 1, 1)<span class="pl-pds">"</span></span>);
+        stmt<span class="pl-k">.</span>executeUpdate(<span class="pl-s"><span class="pl-pds">"</span>INSERT INTO comp VALUES ('N', 'm', 1, 1)<span class="pl-pds">"</span></span>);
+        stmt<span class="pl-k">.</span>executeUpdate(<span class="pl-s"><span class="pl-pds">"</span>INSERT INTO comp VALUES ('N', 's', -2, 1)<span class="pl-pds">"</span></span>);
+    }
+
+    <span class="pl-smi">UnitsProvider</span> unitsProvider <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">UnitsProvider</span>() {
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Fraction</span>&gt;</span> <span class="pl-en">decompose</span>(<span class="pl-smi">String</span> <span class="pl-v">s</span>, <span class="pl-smi">Fraction</span> <span class="pl-v">fraction</span>) {
+            <span class="pl-k">try</span> {
+                <span class="pl-smi">ResultSet</span> resultSet;
+                resultSet <span class="pl-k">=</span> stmt<span class="pl-k">.</span>executeQuery(<span class="pl-s"><span class="pl-pds">"</span>SELECT * FROM comp WHERE deriv = '<span class="pl-pds">"</span></span> <span class="pl-k">+</span> s <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>'<span class="pl-pds">"</span></span>);
+                <span class="pl-k">if</span> (resultSet<span class="pl-k">.</span>next()) {
+                    <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Fraction</span>&gt;</span> decomposed <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">HashMap&lt;&gt;</span>();
+                    resultSet <span class="pl-k">=</span> stmt<span class="pl-k">.</span>executeQuery(<span class="pl-s"><span class="pl-pds">"</span>SELECT base, n, d FROM comp WHERE deriv = <span class="pl-pds">"</span></span> <span class="pl-k">+</span>
+                            <span class="pl-s"><span class="pl-pds">"</span>'<span class="pl-pds">"</span></span> <span class="pl-k">+</span> s <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>'<span class="pl-pds">"</span></span>);
+                    <span class="pl-k">while</span> (resultSet<span class="pl-k">.</span>next()) {
+                        <span class="pl-smi">String</span> base <span class="pl-k">=</span> resultSet<span class="pl-k">.</span>getString(<span class="pl-s"><span class="pl-pds">"</span>base<span class="pl-pds">"</span></span>);
+                        <span class="pl-k">int</span> n <span class="pl-k">=</span> resultSet<span class="pl-k">.</span>getInt(<span class="pl-s"><span class="pl-pds">"</span>n<span class="pl-pds">"</span></span>);
+                        <span class="pl-k">int</span> d <span class="pl-k">=</span> resultSet<span class="pl-k">.</span>getInt(<span class="pl-s"><span class="pl-pds">"</span>d<span class="pl-pds">"</span></span>);
+                        decomposed<span class="pl-k">.</span>put(base, <span class="pl-k">new</span> <span class="pl-smi">Fraction</span>(n, d));
+                    }
+                    <span class="pl-k">return</span> decomposed;
+                } <span class="pl-k">else</span> {
+                    <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-k">HashMap&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Fraction</span>&gt;</span>() {{
+                        put(s, fraction);
+                    }};
+                }
+            } <span class="pl-k">catch</span> (<span class="pl-smi">SQLException</span> e) {
+                e<span class="pl-k">.</span>printStackTrace();
+                <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-k">HashMap&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Fraction</span>&gt;</span>() {{
+                    put(s, fraction);
+                }};
+            }
+        }
+
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-smi">Double</span> <span class="pl-en">conversionFactor</span>(<span class="pl-smi">String</span> <span class="pl-v">s</span>, <span class="pl-smi">Fraction</span> <span class="pl-v">fraction</span>) {
+            <span class="pl-k">try</span> {
+                <span class="pl-smi">ResultSet</span> set;
+                set <span class="pl-k">=</span> stmt<span class="pl-k">.</span>executeQuery(<span class="pl-s"><span class="pl-pds">"</span>SELECT scalar FROM base WHERE sym = '<span class="pl-pds">"</span></span> <span class="pl-k">+</span> s <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>'<span class="pl-pds">"</span></span>);
+                <span class="pl-k">if</span> (set<span class="pl-k">.</span>next()) {
+                    <span class="pl-k">return</span> set<span class="pl-k">.</span>getDouble(<span class="pl-s"><span class="pl-pds">"</span>scalar<span class="pl-pds">"</span></span>);
+                } <span class="pl-k">else</span> {
+                    <span class="pl-k">return</span> <span class="pl-c1">1.0</span>;
+                }
+            } <span class="pl-k">catch</span> (<span class="pl-smi">SQLException</span> e) {
+                e<span class="pl-k">.</span>printStackTrace();
+                <span class="pl-k">return</span> <span class="pl-c1">1.0</span>;
+            }
+        }
+
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">conversionSymbol</span>(<span class="pl-smi">String</span> <span class="pl-v">s</span>) {
+            <span class="pl-k">try</span> {
+                <span class="pl-smi">ResultSet</span> set;
+                set <span class="pl-k">=</span> stmt<span class="pl-k">.</span>executeQuery(<span class="pl-s"><span class="pl-pds">"</span>SELECT si FROM base WHERE sym = '<span class="pl-pds">"</span></span> <span class="pl-k">+</span> s <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>'<span class="pl-pds">"</span></span>);
+                <span class="pl-k">if</span> (set<span class="pl-k">.</span>next()) {
+                    <span class="pl-k">return</span> set<span class="pl-k">.</span>getString(<span class="pl-s"><span class="pl-pds">"</span>si<span class="pl-pds">"</span></span>);
+                } <span class="pl-k">else</span> {
+                    <span class="pl-k">return</span> s;
+                }
+            } <span class="pl-k">catch</span> (<span class="pl-smi">SQLException</span> e) {
+                e<span class="pl-k">.</span>printStackTrace();
+                <span class="pl-k">return</span> s;
+            }
+        }
+    };
+
+    <span class="pl-smi">String</span> expression <span class="pl-k">=</span> req<span class="pl-k">.</span>queryParams(<span class="pl-s"><span class="pl-pds">"</span>expression<span class="pl-pds">"</span></span>);
+    <span class="pl-smi">Calculator</span> calculator <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Calculator</span>(unitsProvider);
+    <span class="pl-smi">QualifiedNumber</span> calculate <span class="pl-k">=</span> calculator<span class="pl-k">.</span>calculate(expression);
+    <span class="pl-k">return</span> calculate<span class="pl-k">.</span>toString();
+} <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> ignored) {
+    <span class="pl-k">return</span> ignored<span class="pl-k">.</span>getMessage();
+} <span class="pl-k">finally</span> {
+    <span class="pl-k">if</span> (connection <span class="pl-k">!=</span> <span class="pl-c1">null</span>) <span class="pl-k">try</span> {
+        connection<span class="pl-k">.</span>close();
+    } <span class="pl-k">catch</span> (<span class="pl-smi">SQLException</span> ignored) {
+
+    }
+}</pre></div>
+
+<h2>
+<a id="rest-api-curl" class="anchor" href="#rest-api-curl" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>REST API (cURL)</h2>
+
+<div class="highlight highlight-source-js"><pre>$ curl https<span class="pl-k">:</span><span class="pl-c">//michael-snowden.herokuapp.com/calculate?expression=2kg%20%2B%202g</span>
+<span class="pl-c1">2.002</span> kg</pre></div>
+
+<h2>
+<a id="rest-api-jquery" class="anchor" href="#rest-api-jquery" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>REST API (jQuery)</h2>
+
+<p><em>This won't work on the GitHub page because of a security policy directive</em></p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> expression <span class="pl-k">=</span> <span class="pl-en">encodeURI</span>(<span class="pl-s"><span class="pl-pds">"</span>2kg * 3 N^2<span class="pl-pds">"</span></span>);
+<span class="pl-smi">$</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">"</span>https://michael-snowden.herokuapp.com/calculate?expression=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> expression, <span class="pl-k">function</span> (<span class="pl-smi">data</span>) {
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(data);
+});</pre></div>
+
+<h2>
+<a id="future-ideas" class="anchor" href="#future-ideas" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Future Ideas</h2>
+
+<p>API method for adding unit conversions</p>
+
+<h3>
+<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+
+<p>Michael Snowden (<a href="https://github.com/MichaelSnowden" class="user-mention">@MichaelSnowden</a>)</p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/MichaelSnowden">MichaelSnowden</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
