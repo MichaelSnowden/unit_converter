@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Unit converter by MichaelSnowden</title>
+    <title>Unit Converter by MichaelSnowden</title>
 
     <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
@@ -45,38 +45,35 @@
         </ul>
     </header>
     <section>
-        <h1>
-            <a id="unit-converter" class="anchor" href="#unit-converter" aria-hidden="true"><span aria-hidden="true"
-                                                                                                  class="octicon octicon-link"></span></a>Unit
-            Converter</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
 
-        <div class="row">
-            <div class="col-lg-12">
+                    <div class="row">
 
-                <div class="row">
-
-                    <div class="col-sm-5">
-                        <h2>Demo</h2>
-                        <div class="well">
-                            <form>
-                                <div class="form-group">
-                                    <label for="expression" class="sr-only"></label>
-                                    <input id="expression" name="expression" type="text" class="form-control"
-                                           placeholder="5 N * 10 kg m / s^2">
-                                </div>
-                            </form>
+                        <div class="col-sm-6">
+                            <h2>Demo</h2>
+                            <div class="well">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="expression" class="sr-only"></label>
+                                        <input id="expression" name="expression" type="text" class="form-control"
+                                               placeholder="5 N * 10 kg m / s^2">
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-2"></div>
-                    <div class="col-sm-5">
-                        <h2>Demo Result</h2>
-                        <div class="well">
-                            <form>
-                                <div class="form-group">
-                                    <label for="result" class="sr-only"></label>
-                                    <input id="result" name="result" type="text" class="form-control" disabled="true">
-                                </div>
-                            </form>
+                        <div class="col-sm-6">
+                            <h2>Demo Result</h2>
+                            <div class="well">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="result" class="sr-only"></label>
+                                        <input id="result" name="result" type="text" class="form-control"
+                                               disabled="true">
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -307,7 +304,7 @@ console<span class="pl-k">.</span>println(calculator<span class="pl-k">.</span>c
             <a id="rest-api-jquery" class="anchor" href="#rest-api-jquery" aria-hidden="true"><span aria-hidden="true"
                                                                                                     class="octicon octicon-link"></span></a>REST
             API (jQuery)</h2>
-        
+
         <div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> expression <span
                 class="pl-k">=</span> <span class="pl-en">encodeURI</span>(<span class="pl-s"><span
                 class="pl-pds">"</span>2kg * 3 N^2<span class="pl-pds">"</span></span>);
