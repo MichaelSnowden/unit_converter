@@ -109,8 +109,10 @@ public class Calculator {
         if (function == null) {
             throw new IllegalStateException(identifier + " is not defined");
         }
-        List<QualifiedNumber> arguments = context.expression().stream().map(this::calculate).collect(Collectors
-                .toList());
+        List<QualifiedNumber> arguments = context.expression()
+                .stream()
+                .map(this::calculate)
+                .collect(Collectors.toList());
         return function.evaluate(arguments);
     }
 

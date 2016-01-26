@@ -51,6 +51,7 @@ public class UnitsProviderImpl implements UnitsProvider {
 
         symbols = new HashMap<>();
         symbols.put("g", "kg");
+        symbols.put("ms", "s");
     }
 
     @Override
