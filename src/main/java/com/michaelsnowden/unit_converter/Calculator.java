@@ -8,7 +8,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -17,22 +16,22 @@ import java.util.stream.Collectors;
 public class Calculator {
 
     private final FunctionProvider functionProvider;
-    private final AbstractSymbolLookup unitsProvider;
+    private final SymbolLookup unitsProvider;
 
     public Calculator() {
-        this(new FunctionProviderFactory(new SymbolLookup()).getDefaultFunctionProvider(), new SymbolLookup
+        this(new FunctionProviderFactory().getDefaultFunctionProvider(), new SymbolLookupImpl
                 ());
     }
 
     public Calculator(FunctionProvider functionProvider) {
-        this(functionProvider, new SymbolLookup());
+        this(functionProvider, new SymbolLookupImpl());
     }
 
-    public Calculator(AbstractSymbolLookup unitsProvider) {
-        this(new FunctionProviderFactory(unitsProvider).getDefaultFunctionProvider(), unitsProvider);
+    public Calculator(SymbolLookup unitsProvider) {
+        this(new FunctionProviderFactory().getDefaultFunctionProvider(), unitsProvider);
     }
 
-    public Calculator(FunctionProvider functionProvider, AbstractSymbolLookup unitsProvider) {
+    public Calculator(FunctionProvider functionProvider, SymbolLookup unitsProvider) {
         this.functionProvider = functionProvider;
         this.unitsProvider = unitsProvider;
     }
@@ -70,7 +69,7 @@ public class Calculator {
     private Term calculate(ArithmeticParser.TermContext context) {
         if (context.term().size() == 0) {
             return calculate(context.factor()).times(new Term(Math.pow(-1, context.NEG().size()), new
-                    HashMap<>(), unitsProvider));
+                    HashMap<>()));
         }
         if (context.op == null) {
             return calculate(context.term(0)).times(calculate(context.factor()));
@@ -93,14 +92,12 @@ public class Calculator {
             return calculate(context.expression());
         } else {
             return calculate(context.factor(0)).raisedTo(calculate(context.factor(1)).times(new Term(Math
-                    .pow(-1, context.NEG().size()), new HashMap<>(), unitsProvider)));
+                    .pow(-1, context.NEG().size()), new HashMap<>())));
         }
     }
 
     private Term calculate(ArithmeticParser.StringContext context) {
-        Map<String, Fraction> units = new HashMap<>();
-        units.put(context.getText(), new Fraction(1, 1));
-        return new Term(1.0, units, unitsProvider);
+        return unitsProvider.lookup(context.getText());
     }
 
     private Term calculate(ArithmeticParser.FunctionContext context) {
@@ -123,6 +120,6 @@ public class Calculator {
         } else {
             value = Double.parseDouble(context.FLOAT().getText());
         }
-        return new Term(value, new HashMap<>(), unitsProvider);
+        return new Term(value, new HashMap<>());
     }
 }

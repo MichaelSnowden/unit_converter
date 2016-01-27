@@ -1,20 +1,18 @@
 package com.michaelsnowden.unit_converter;
 
+import com.michaelsnowden.unit_converter.functions.CosineFunction;
+import com.michaelsnowden.unit_converter.functions.SinFunction;
+import com.michaelsnowden.unit_converter.functions.SquareRootFunction;
+
 /**
  * @author michael.snowden
  */
 public class FunctionProviderFactory {
-    private final AbstractSymbolLookup unitsProvider;
-
-    public FunctionProviderFactory(AbstractSymbolLookup unitsProvider) {
-        this.unitsProvider = unitsProvider;
-    }
-
     public FunctionProvider getDefaultFunctionProvider() {
         return new FunctionProviderBuilder()
-                .withFunction("cos", new CosineFunction(unitsProvider))
-                .withFunction("sqrt", new SquareRootFunction(unitsProvider))
-                .withFunction("sin", new SinFunction(unitsProvider))
+                .withFunction("cos", new CosineFunction())
+                .withFunction("sqrt", new SquareRootFunction())
+                .withFunction("sin", new SinFunction())
                 .toFunctionProviderImpl();
     }
 }

@@ -1,4 +1,7 @@
-package com.michaelsnowden.unit_converter;
+package com.michaelsnowden.unit_converter.functions;
+
+import com.michaelsnowden.unit_converter.Function;
+import com.michaelsnowden.unit_converter.Term;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,12 +9,7 @@ import java.util.List;
 /**
  * @author michael.snowden
  */
-public class SinFunction implements Function {
-    private final AbstractSymbolLookup unitsProvider;
-
-    public SinFunction(AbstractSymbolLookup unitsProvider) {
-        this.unitsProvider = unitsProvider;
-    }
+public class CosineFunction implements Function {
 
     @Override
     public Term evaluate(List<Term> arguments) {
@@ -22,6 +20,6 @@ public class SinFunction implements Function {
         if (!number.isUnitless()) {
             throw new IllegalArgumentException("The sin function requires a unitless argument");
         }
-        return new Term(Math.sin(number.getValue()), new HashMap<>(), unitsProvider);
+        return new Term(Math.cos(number.getValue()), new HashMap<>());
     }
 }

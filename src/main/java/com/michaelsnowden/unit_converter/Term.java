@@ -12,22 +12,24 @@ import java.util.stream.Stream;
 public class Term {
     private double value;
     private Map<String, Fraction> units;
-    private final AbstractSymbolLookup unitsProvider;
 
-    public Term(double value, Map<String, Fraction> units, AbstractSymbolLookup unitsProvider) {
-        this.unitsProvider = unitsProvider;
-        this.units = units;
+    public Term(double value, Map<String, Fraction> units) {
+        this.units = units
+                .entrySet()
+                .stream()
+                .filter(e -> e.getValue().isNotZero())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         this.value = value;
     }
 
     public Term plus(Term number) {
         verifySameUnits(number);
-        return new Term(value + number.getValue(), getUnits(), unitsProvider);
+        return new Term(value + number.getValue(), getUnits());
     }
 
     public Term minus(Term number) {
         verifySameUnits(number);
-        return new Term(value - number.getValue(), getUnits(), unitsProvider);
+        return new Term(value - number.getValue(), getUnits());
     }
 
     public Map<String, Fraction> getUnits() {
@@ -38,7 +40,7 @@ public class Term {
         return value;
     }
 
-    boolean isUnitless() {
+    public boolean isUnitless() {
         return units.size() == 0;
     }
 
@@ -69,22 +71,15 @@ public class Term {
         for (String unit : this.units.keySet()) {
             units.put(unit, this.units.get(unit).times(new Fraction(number.getValue())));
         }
-        return new Term(Math.pow(getValue(), number.getValue()), units, unitsProvider);
-    }
-
-    public Term negated() {
-        return new Term(-getValue(), getUnits(), unitsProvider);
+        return new Term(Math.pow(getValue(), number.getValue()), units);
     }
 
     public Term dividedBy(Term number) {
-        Map<String, Fraction> units = new HashMap<>(getUnits());
-        for (String s : number.getUnits().keySet()) {
-            if (units.get(s) == null) {
-                units.put(s, new Fraction(0, 1));
-            }
-            units.put(s, units.get(s).minus(number.getUnits().get(s)));
-        }
-        return new Term(value / number.getValue(), units, unitsProvider);
+        Map<String, Fraction> units = Stream.of(this.units, number.getUnits())
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Fraction::minus));
+        return new Term(value / number.getValue(), units);
     }
 
     public Term times(Term number) {
@@ -92,7 +87,7 @@ public class Term {
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Fraction::plus));
-        return new Term(value * number.getValue(), units, unitsProvider);
+        return new Term(value * number.getValue(), units);
     }
 
     private void verifySameUnits(Term number) {
@@ -104,9 +99,5 @@ public class Term {
                 throw new IllegalArgumentException("Cannot add numbers with different dimensions");
             }
         }
-    }
-
-    public AbstractSymbolLookup getUnitsProvider() {
-        return unitsProvider;
     }
 }
