@@ -49,27 +49,42 @@ If you want to add units (I haven't added them all), then try constructing the `
 Here is an example taken directly from a webiste I have which uses this repo.
 
 ```java
-SymbolLookup symbolLookup = new AbstractSymbolLookup() {
-    {
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM comp");
-        while (resultSet.next()) {
-            String deriv = resultSet.getString("deriv");
-            String base = resultSet.getString("base");
-            double v = resultSet.getDouble("v");
-            int n = resultSet.getInt("n");
-            int d = resultSet.getInt("d");
-            Term term = new Term(v, ImmutableMap.of(base, new Fraction(n, d)));
-            if (!map.containsKey(deriv)) {
-                map.put(deriv, term);
-            } else {
-                map.put(deriv, map.get(deriv).times(term));
+get("/calculate", (req, res) -> {
+    Connection connection = null;
+    try {
+        connection = getConnection();
+        Statement statement = connection.createStatement();
+        SymbolLookup symbolLookup = getSymbolLookup(statement);
+        String expression = req.queryParams("expression");
+        if (expression == null) {
+            return "Missing parameter 'expression'";
+        }
+        Calculator calculator = new Calculator(symbolLookup);
+        return calculator.calculate(expression);
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return "An error occurred: " + e.getMessage();
+    }
+});
+
+private static SymbolLookup getSymbolLookup(final Statement statement) throws SQLException, IOException {
+    return new AbstractSymbolLookup() {
+        {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM map");
+            while (resultSet.next()) {
+                String key = resultSet.getString("key");
+                String value = resultSet.getString("value");
+                Calculator calculator = new Calculator(this);
+                Term term = calculator.calculate(value);
+                if (!map.containsKey(key)) {
+                    map.put(key, term);
+                } else {
+                    map.put(key, map.get(key).times(term));
+                }
             }
         }
-    }
-};
-String expression = req.queryParams("expression");
-Calculator calculator = new Calculator(symbolLookup);
-return calculator.calculate(expression);
+    };
+}
 ```
 
 ## REST API (cURL)
