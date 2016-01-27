@@ -10,7 +10,7 @@ factor: factor op='^' NEG* factor | number | function | '(' expression ')' | str
 
 function: IDENTIFIER '(' expression (',' expression)* ')';
 
-number: DecimalFloatingPointLiteral;
+number: DecimalFloatingPointLiteral | DecimalIntegerLiteral;
 
 string: IDENTIFIER;
 
@@ -23,6 +23,10 @@ DecimalFloatingPointLiteral
     |   '.' Digits ExponentPart? FloatTypeSuffix?
     |   Digits ExponentPart FloatTypeSuffix?
     |   Digits FloatTypeSuffix
+    ;
+
+DecimalIntegerLiteral
+    :   DecimalNumeral IntegerTypeSuffix?
     ;
 
 fragment
