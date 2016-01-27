@@ -19,7 +19,7 @@ public class REPL {
             try {
                 Calculator calculator = new Calculator();
                 console.println(calculator.calculate(line).toString());
-            } catch (IllegalArgumentException e) {
+            } catch (Exception e) {
                 String message = e.getMessage();
                 if (message == null) {
                     console.println("An unknown error occurred");
