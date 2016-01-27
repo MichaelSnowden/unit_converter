@@ -120,6 +120,13 @@ public class Calculator {
         } else {
             value = Double.parseDouble(context.FLOAT().getText());
         }
+        if (context.e() != null) {
+            value *= Math.pow(10, calculate(context.e()));
+        }
         return new Term(value, new HashMap<>());
+    }
+
+    private int calculate(ArithmeticParser.EContext e) {
+        return (e.neg == null ? 1 : -1) * Integer.parseInt(e.INTEGER().getText());
     }
 }
