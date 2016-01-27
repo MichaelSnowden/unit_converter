@@ -31,7 +31,7 @@
                 $("#defineResult").val("Loading...");
                 var key = $("#defineKey").val().trim();
                 var value = encodeURI($("#defineValue").val());
-                $.get("https://michael-snowden.herokuapp.com/define?expression=" + key + "&value=" + value, function (data) {
+                $.get("https://michael-snowden.herokuapp.com/define?key=" + key + "&value=" + value, function (data) {
                     $("#defineResult").val(data);
                 });
             });
@@ -55,44 +55,41 @@
         </ul>
     </header>
     <section>
-        <div class="container">
-            <div>
-                <h2>Define a Symbol</h2>
-                <form id="#define" class="form-inline">
-                    <div class="form-group">
-                        <label for="defineKey" class="sr-only"></label>
-                        <input id="defineKey" name="defineKey" type="text" class="form-control"
-                               placeholder="N">
-                    </div>
-                    <div class="form-group">
-                        <label for="defineValue" class="sr-only"></label>
-                        <input id="defineValue" name="defineValue" type="text" class="form-control"
-                               placeholder="kg m / s^2">
-                    </div>
-                    <div class="form-group">
-                        <label for="defineResult" class="sr-only"></label>
-                        <input id="defineResult" name="defineResult" type="text" class="form-control"
-                               disabled="true">
-                    </div>
-                </form>
+        <h2>Define a Symbol</h2>
+        <form id="define" class="form-inline">
+            <div class="form-group">
+                <label for="defineKey" class="sr-only"></label>
+                <input id="defineKey" name="defineKey" type="text" class="form-control"
+                       placeholder="N">
             </div>
-            <div>
-                <h2>Evaluate an Expression</h2>
+            <div class="form-group">
+                <label for="defineValue" class="sr-only"></label>
+                <input id="defineValue" name="defineValue" type="text" class="form-control"
+                       placeholder="kg m / s^2">
+            </div>
+            <div class="form-group">
+                <label for="defineResult" class="sr-only"></label>
+                <input id="defineResult" name="defineResult" type="text" class="form-control"
+                       disabled="true">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        <h2>Evaluate an Expression</h2>
 
-                <form id="calculate" class="form-inline">
-                    <div class="form-group">
-                        <label for="expression" class="sr-only"></label>
-                        <input id="expression" name="expression" type="text" class="form-control"
-                               placeholder="5 N * 10 kg m / s^2">
-                    </div>
-                    <div class="form-group">
-                        <label for="result" class="sr-only"></label>
-                        <input id="result" name="result" type="text" class="form-control"
-                               disabled="true">
-                    </div>
-                </form>
+        <form id="calculate" class="form-inline">
+            <div class="form-group">
+                <label for="expression" class="sr-only"></label>
+                <input id="expression" name="expression" type="text" class="form-control"
+                       placeholder="5 N * 10 kg m / s^2">
             </div>
-        </div>
+            <div class="form-group">
+                <label for="result" class="sr-only"></label>
+                <input id="result" name="result" type="text" class="form-control"
+                       disabled="true">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+
 
         <h2>
             <a id="command-line-installation" class="anchor" href="#command-line-installation" aria-hidden="true"><span
