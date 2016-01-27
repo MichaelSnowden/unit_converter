@@ -48,10 +48,10 @@ public class Term {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         Fraction fraction = new Fraction(value);
-        if (fraction.getD() == 1) {
+        if (fraction.getD() == 1 && !(fraction.getN() == 0 && value != 0)) {
             builder.append(fraction.getN());
         } else {
-            builder.append(fraction.getDouble());
+            builder.append(value);
         }
         for (String unit : units.keySet().stream().sorted().collect(Collectors.toList())) {
             Fraction power = units.get(unit);
@@ -69,7 +69,7 @@ public class Term {
         }
         Map<String, Fraction> units = new HashMap<>();
         for (String unit : this.units.keySet()) {
-            units.put(unit, this.units.get(unit).times(new Fraction(number.getValue())));
+            units.put(unit, this.units.get(unit).times(number.getValue()));
         }
         return new Term(Math.pow(getValue(), number.getValue()), units);
     }

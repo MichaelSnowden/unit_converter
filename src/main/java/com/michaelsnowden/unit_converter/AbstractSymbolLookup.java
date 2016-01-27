@@ -32,6 +32,4 @@ public abstract class AbstractSymbolLookup implements SymbolLookup {
             return new Term(1.0, of(symbol, power));
         }
     }
-
-    public abstract Map<String, Term> getMap();
 }

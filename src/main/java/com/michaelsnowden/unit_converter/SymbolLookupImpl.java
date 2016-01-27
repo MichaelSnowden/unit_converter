@@ -15,5 +15,6 @@ public class SymbolLookupImpl extends AbstractSymbolLookup {
         map.put("N", new Term(1.0, of("kg", new Fraction(1), "m", new Fraction(1), "s", new Fraction(-2))));
         map.put("Hz", new Term(1.0, of("s", new Fraction(-1))));
         map.put("Pa", new Term(1.0, of("m", new Fraction(-1), "kg", new Fraction(1), "s", new Fraction(-2))));
+        map.put("G", new Term(6.67408E-11, emptyMap()));
     }
 }

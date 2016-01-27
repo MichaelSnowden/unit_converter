@@ -8,7 +8,7 @@ public class Fraction {
     private final int d;
 
     public Fraction(double value) {
-        this((int) (value * 10000), 10000);
+        this((int) (value * 1E5), (int) 1E5);
     }
 
     public Fraction(int n, int d) {
@@ -93,5 +93,9 @@ public class Fraction {
 
     public boolean isNotZero() {
         return n != 0;
+    }
+
+    public Fraction times(double value) {
+        return new Fraction((int) Math.round(n * value), d);
     }
 }
