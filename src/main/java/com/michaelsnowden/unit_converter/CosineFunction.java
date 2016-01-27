@@ -7,21 +7,21 @@ import java.util.List;
  * @author michael.snowden
  */
 public class CosineFunction implements Function {
-    private final UnitsProvider unitsProvider;
+    private final AbstractSymbolLookup unitsProvider;
 
-    public CosineFunction(UnitsProvider unitsProvider) {
+    public CosineFunction(AbstractSymbolLookup unitsProvider) {
         this.unitsProvider = unitsProvider;
     }
 
     @Override
-    public QualifiedNumber evaluate(List<QualifiedNumber> arguments) {
+    public Term evaluate(List<Term> arguments) {
         if (arguments.size() != 1) {
             throw new IllegalArgumentException("The sin function requires exactly 1 argument");
         }
-        QualifiedNumber number = arguments.get(0);
+        Term number = arguments.get(0);
         if (!number.isUnitless()) {
             throw new IllegalArgumentException("The sin function requires a unitless argument");
         }
-        return new QualifiedNumber(Math.sin(number.getValue()), new HashMap<>(), unitsProvider);
+        return new Term(Math.cos(number.getValue()), new HashMap<>(), unitsProvider);
     }
 }

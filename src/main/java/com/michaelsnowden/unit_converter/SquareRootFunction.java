@@ -7,18 +7,18 @@ import java.util.List;
  * @author michael.snowden
  */
 public class SquareRootFunction implements Function {
-    private final UnitsProvider unitsProvider;
+    private final AbstractSymbolLookup unitsProvider;
 
-    public SquareRootFunction(UnitsProvider unitsProvider) {
+    public SquareRootFunction(AbstractSymbolLookup unitsProvider) {
         this.unitsProvider = unitsProvider;
     }
 
     @Override
-    public QualifiedNumber evaluate(List<QualifiedNumber> arguments) {
-        QualifiedNumber number = arguments.get(0);
+    public Term evaluate(List<Term> arguments) {
+        Term number = arguments.get(0);
         if (!number.isUnitless()) {
             throw new IllegalArgumentException("The number passed into a square root function must be unitless");
         }
-        return new QualifiedNumber(Math.sqrt(number.getValue()), new HashMap<>(), unitsProvider);
+        return new Term(Math.sqrt(number.getValue()), new HashMap<>(), unitsProvider);
     }
 }

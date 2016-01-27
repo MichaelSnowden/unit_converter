@@ -17,27 +17,27 @@ import java.util.stream.Collectors;
 public class Calculator {
 
     private final FunctionProvider functionProvider;
-    private final UnitsProvider unitsProvider;
+    private final AbstractSymbolLookup unitsProvider;
 
     public Calculator() {
-        this(new FunctionProviderFactory(new UnitsProviderImpl()).getDefaultFunctionProvider(), new UnitsProviderImpl
+        this(new FunctionProviderFactory(new SymbolLookup()).getDefaultFunctionProvider(), new SymbolLookup
                 ());
     }
 
     public Calculator(FunctionProvider functionProvider) {
-        this(functionProvider, new UnitsProviderImpl());
+        this(functionProvider, new SymbolLookup());
     }
 
-    public Calculator(UnitsProvider unitsProvider) {
+    public Calculator(AbstractSymbolLookup unitsProvider) {
         this(new FunctionProviderFactory(unitsProvider).getDefaultFunctionProvider(), unitsProvider);
     }
 
-    public Calculator(FunctionProvider functionProvider, UnitsProvider unitsProvider) {
+    public Calculator(FunctionProvider functionProvider, AbstractSymbolLookup unitsProvider) {
         this.functionProvider = functionProvider;
         this.unitsProvider = unitsProvider;
     }
 
-    public QualifiedNumber calculate(String string) throws IOException {
+    public Term calculate(String string) throws IOException {
         BaseErrorListener errorListener = new BaseErrorListener() {
             @Override
             public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol,
@@ -56,7 +56,7 @@ public class Calculator {
         return calculate(parser.expression());
     }
 
-    public QualifiedNumber calculate(ArithmeticParser.ExpressionContext context) {
+    public Term calculate(ArithmeticParser.ExpressionContext context) {
         if (context.op == null) {
             return calculate(context.term());
         }
@@ -67,9 +67,9 @@ public class Calculator {
         }
     }
 
-    private QualifiedNumber calculate(ArithmeticParser.TermContext context) {
+    private Term calculate(ArithmeticParser.TermContext context) {
         if (context.term().size() == 0) {
-            return calculate(context.factor()).times(new QualifiedNumber(Math.pow(-1, context.NEG().size()), new
+            return calculate(context.factor()).times(new Term(Math.pow(-1, context.NEG().size()), new
                     HashMap<>(), unitsProvider));
         }
         if (context.op == null) {
@@ -82,7 +82,7 @@ public class Calculator {
         }
     }
 
-    private QualifiedNumber calculate(ArithmeticParser.FactorContext context) {
+    private Term calculate(ArithmeticParser.FactorContext context) {
         if (context.number() != null) {
             return calculate(context.number());
         } else if (context.function() != null) {
@@ -92,37 +92,37 @@ public class Calculator {
         } else if (context.expression() != null) {
             return calculate(context.expression());
         } else {
-            return calculate(context.factor(0)).raisedTo(calculate(context.factor(1)).times(new QualifiedNumber(Math
+            return calculate(context.factor(0)).raisedTo(calculate(context.factor(1)).times(new Term(Math
                     .pow(-1, context.NEG().size()), new HashMap<>(), unitsProvider)));
         }
     }
 
-    private QualifiedNumber calculate(ArithmeticParser.StringContext context) {
+    private Term calculate(ArithmeticParser.StringContext context) {
         Map<String, Fraction> units = new HashMap<>();
         units.put(context.getText(), new Fraction(1, 1));
-        return new QualifiedNumber(1.0, units, unitsProvider);
+        return new Term(1.0, units, unitsProvider);
     }
 
-    private QualifiedNumber calculate(ArithmeticParser.FunctionContext context) {
+    private Term calculate(ArithmeticParser.FunctionContext context) {
         String identifier = context.IDENTIFIER().getText();
         Function function = functionProvider.getFunction(identifier);
         if (function == null) {
             throw new IllegalStateException(identifier + " is not defined");
         }
-        List<QualifiedNumber> arguments = context.expression()
+        List<Term> arguments = context.expression()
                 .stream()
                 .map(this::calculate)
                 .collect(Collectors.toList());
         return function.evaluate(arguments);
     }
 
-    private QualifiedNumber calculate(ArithmeticParser.NumberContext context) {
+    private Term calculate(ArithmeticParser.NumberContext context) {
         Double value;
         if (context.INTEGER() != null) {
             value = (double) Integer.parseInt(context.INTEGER().getText());
         } else {
             value = Double.parseDouble(context.FLOAT().getText());
         }
-        return new QualifiedNumber(value, new HashMap<>(), unitsProvider);
+        return new Term(value, new HashMap<>(), unitsProvider);
     }
 }

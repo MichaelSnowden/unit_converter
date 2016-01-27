@@ -6,5 +6,5 @@ import java.util.List;
  * @author michael.snowden
  */
 public interface Function {
-    QualifiedNumber evaluate(List<QualifiedNumber> arguments);
+    Term evaluate(List<Term> arguments);
 }

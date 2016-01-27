@@ -9,49 +9,25 @@ import java.util.stream.Stream;
 /**
  * @author michael.snowden
  */
-public class QualifiedNumber {
-    private final double value;
-    private final Map<String, Fraction> units;
-    private final UnitsProvider unitsProvider;
+public class Term {
+    private double value;
+    private Map<String, Fraction> units;
+    private final AbstractSymbolLookup unitsProvider;
 
-    public QualifiedNumber(double value, Map<String, Fraction> units, UnitsProvider unitsProvider) {
+    public Term(double value, Map<String, Fraction> units, AbstractSymbolLookup unitsProvider) {
         this.unitsProvider = unitsProvider;
-        units = units.entrySet()
-                .stream()
-                .map(e -> unitsProvider.decompose(e.getKey(), e.getValue()))
-                .reduce(new HashMap<>(), (m1, m2) -> Stream.of(m1, m2)
-                        .map(Map::entrySet)
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                Map.Entry::getValue,
-                                Fraction::plus
-                        )))
-                .entrySet()
-                .stream()
-                .filter(e -> e.getValue().isNotZero())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        this.value = value * units
-                .entrySet()
-                .stream()
-                .map(e -> unitsProvider.conversionFactor(e.getKey(), e.getValue()))
-                .reduce(1.0, (a, b) -> a * b);
-        this.units = units.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        e -> unitsProvider.conversionSymbol(e.getKey()),
-                        Map.Entry::getValue
-                ));
+        this.units = units;
+        this.value = value;
     }
 
-    public QualifiedNumber plus(QualifiedNumber number) {
+    public Term plus(Term number) {
         verifySameUnits(number);
-        return new QualifiedNumber(value + number.getValue(), getUnits(), unitsProvider);
+        return new Term(value + number.getValue(), getUnits(), unitsProvider);
     }
 
-    public QualifiedNumber minus(QualifiedNumber number) {
+    public Term minus(Term number) {
         verifySameUnits(number);
-        return new QualifiedNumber(value - number.getValue(), getUnits(), unitsProvider);
+        return new Term(value - number.getValue(), getUnits(), unitsProvider);
     }
 
     public Map<String, Fraction> getUnits() {
@@ -85,7 +61,7 @@ public class QualifiedNumber {
         return builder.toString();
     }
 
-    public QualifiedNumber raisedTo(QualifiedNumber number) {
+    public Term raisedTo(Term number) {
         if (!number.isUnitless()) {
             throw new IllegalArgumentException("Exponents cannot have units");
         }
@@ -93,14 +69,14 @@ public class QualifiedNumber {
         for (String unit : this.units.keySet()) {
             units.put(unit, this.units.get(unit).times(new Fraction(number.getValue())));
         }
-        return new QualifiedNumber(Math.pow(getValue(), number.getValue()), units, unitsProvider);
+        return new Term(Math.pow(getValue(), number.getValue()), units, unitsProvider);
     }
 
-    public QualifiedNumber negated() {
-        return new QualifiedNumber(-getValue(), getUnits(), unitsProvider);
+    public Term negated() {
+        return new Term(-getValue(), getUnits(), unitsProvider);
     }
 
-    public QualifiedNumber dividedBy(QualifiedNumber number) {
+    public Term dividedBy(Term number) {
         Map<String, Fraction> units = new HashMap<>(getUnits());
         for (String s : number.getUnits().keySet()) {
             if (units.get(s) == null) {
@@ -108,18 +84,18 @@ public class QualifiedNumber {
             }
             units.put(s, units.get(s).minus(number.getUnits().get(s)));
         }
-        return new QualifiedNumber(value / number.getValue(), units, unitsProvider);
+        return new Term(value / number.getValue(), units, unitsProvider);
     }
 
-    public QualifiedNumber times(QualifiedNumber number) {
+    public Term times(Term number) {
         Map<String, Fraction> units = Stream.of(this.units, number.getUnits())
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Fraction::plus));
-        return new QualifiedNumber(value * number.getValue(), units, unitsProvider);
+        return new Term(value * number.getValue(), units, unitsProvider);
     }
 
-    private void verifySameUnits(QualifiedNumber number) {
+    private void verifySameUnits(Term number) {
         if (getUnits().size() != number.getUnits().size()) {
             throw new IllegalArgumentException("Cannot add numbers with different dimensions");
         }
@@ -130,7 +106,7 @@ public class QualifiedNumber {
         }
     }
 
-    public UnitsProvider getUnitsProvider() {
+    public AbstractSymbolLookup getUnitsProvider() {
         return unitsProvider;
     }
 }

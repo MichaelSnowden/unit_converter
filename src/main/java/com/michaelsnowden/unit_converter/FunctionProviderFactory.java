@@ -4,9 +4,9 @@ package com.michaelsnowden.unit_converter;
  * @author michael.snowden
  */
 public class FunctionProviderFactory {
-    private final UnitsProvider unitsProvider;
+    private final AbstractSymbolLookup unitsProvider;
 
-    public FunctionProviderFactory(UnitsProvider unitsProvider) {
+    public FunctionProviderFactory(AbstractSymbolLookup unitsProvider) {
         this.unitsProvider = unitsProvider;
     }
 

@@ -29,10 +29,10 @@ public class ArithmeticTest {
     public void testSemantics() throws Exception {
         ArithmeticParser parser = getParser();
         ArithmeticParser.ExpressionContext program = parser.expression();
-        UnitsProviderImpl unitsProvider = new UnitsProviderImpl();
+        SymbolLookup unitsProvider = new SymbolLookup();
         Calculator calculator = new Calculator(new FunctionProviderFactory(unitsProvider).getDefaultFunctionProvider(), unitsProvider);
-        QualifiedNumber qualifiedNumber = calculator.calculate(program);
-        Assert.assertEquals(qualifiedNumber.getValue(), 2016.0);
+        Term term = calculator.calculate(program);
+        Assert.assertEquals(term.getValue(), 2016.0);
     }
 
     private ArithmeticParser getParser() throws IOException {
