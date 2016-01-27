@@ -10,19 +10,87 @@ factor: factor op='^' NEG* factor | number | function | '(' expression ')' | str
 
 function: IDENTIFIER '(' expression (',' expression)* ')';
 
-number: (INTEGER | FLOAT) e?;
-
-e: 'E' neg='-'? INTEGER;
+number: DecimalFloatingPointLiteral;
 
 string: IDENTIFIER;
 
 NEG : '-' ;
 
-INTEGER: '0' | [1-9] [0-9]*;
-
-FLOAT: ('0' | [1-9] [0-9]*)'.' [0-9]+;
-
-
 IDENTIFIER: [a-zA-Z]+;
 
-WHITESPACE: [ \n\r\t]+ -> skip;
+DecimalFloatingPointLiteral
+    :   Digits '.' Digits? ExponentPart? FloatTypeSuffix?
+    |   '.' Digits ExponentPart? FloatTypeSuffix?
+    |   Digits ExponentPart FloatTypeSuffix?
+    |   Digits FloatTypeSuffix
+    ;
+
+fragment
+IntegerTypeSuffix
+    :   [lL]
+    ;
+
+fragment
+DecimalNumeral
+    :   '0'
+    |   NonZeroDigit (Digits? | Underscores Digits)
+    ;
+
+fragment
+Digits
+    :   Digit (DigitOrUnderscore* Digit)?
+    ;
+
+fragment
+Digit
+    :   '0'
+    |   NonZeroDigit
+    ;
+
+fragment
+NonZeroDigit
+    :   [1-9]
+    ;
+
+fragment
+DigitOrUnderscore
+    :   Digit
+    |   '_'
+    ;
+
+fragment
+Underscores
+    :   '_'+
+    ;
+
+fragment
+ExponentPart
+    :   ExponentIndicator SignedInteger
+    ;
+
+fragment
+ExponentIndicator
+    :   [eE]
+    ;
+
+fragment
+SignedInteger
+    :   Sign? Digits
+    ;
+
+fragment
+Sign
+    :   [+-]
+    ;
+
+fragment
+FloatTypeSuffix
+    :   [fFdD]
+    ;
+
+fragment
+ZeroToThree
+    :   [0-3]
+    ;
+
+WHITESPACE: [ \n\r\t\u000C]+ -> skip;

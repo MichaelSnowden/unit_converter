@@ -114,19 +114,7 @@ public class Calculator {
     }
 
     private Term calculate(ArithmeticParser.NumberContext context) {
-        Double value;
-        if (context.INTEGER() != null) {
-            value = (double) Integer.parseInt(context.INTEGER().getText());
-        } else {
-            value = Double.parseDouble(context.FLOAT().getText());
-        }
-        if (context.e() != null) {
-            value *= Math.pow(10, calculate(context.e()));
-        }
+        Double value = Double.parseDouble(context.getText());
         return new Term(value, new HashMap<>());
-    }
-
-    private int calculate(ArithmeticParser.EContext e) {
-        return (e.neg == null ? 1 : -1) * Integer.parseInt(e.INTEGER().getText());
     }
 }
