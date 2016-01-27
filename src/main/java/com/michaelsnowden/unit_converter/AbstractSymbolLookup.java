@@ -8,7 +8,7 @@ import static com.google.appengine.repackaged.com.google.common.collect.Immutabl
 /**
  * @author michael.snowden
  */
-public class AbstractSymbolLookup implements SymbolLookup {
+public abstract class AbstractSymbolLookup implements SymbolLookup {
     protected final Map<String, Term> map;
 
     public AbstractSymbolLookup() {
@@ -32,4 +32,6 @@ public class AbstractSymbolLookup implements SymbolLookup {
             return new Term(1.0, of(symbol, power));
         }
     }
+
+    public abstract Map<String, Term> getMap();
 }

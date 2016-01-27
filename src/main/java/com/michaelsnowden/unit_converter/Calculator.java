@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class Calculator {
 
     private final FunctionProvider functionProvider;
-    private final SymbolLookup unitsProvider;
+    private final SymbolLookup symbolLookup;
 
     public Calculator() {
         this(new FunctionProviderFactory().getDefaultFunctionProvider(), new SymbolLookupImpl
@@ -27,13 +27,13 @@ public class Calculator {
         this(functionProvider, new SymbolLookupImpl());
     }
 
-    public Calculator(SymbolLookup unitsProvider) {
-        this(new FunctionProviderFactory().getDefaultFunctionProvider(), unitsProvider);
+    public Calculator(SymbolLookup symbolLookup) {
+        this(new FunctionProviderFactory().getDefaultFunctionProvider(), symbolLookup);
     }
 
-    public Calculator(FunctionProvider functionProvider, SymbolLookup unitsProvider) {
+    public Calculator(FunctionProvider functionProvider, SymbolLookup symbolLookup) {
         this.functionProvider = functionProvider;
-        this.unitsProvider = unitsProvider;
+        this.symbolLookup = symbolLookup;
     }
 
     public Term calculate(String string) throws IOException {
@@ -97,7 +97,7 @@ public class Calculator {
     }
 
     private Term calculate(ArithmeticParser.StringContext context) {
-        return unitsProvider.lookup(context.getText());
+        return symbolLookup.lookup(context.getText());
     }
 
     private Term calculate(ArithmeticParser.FunctionContext context) {
