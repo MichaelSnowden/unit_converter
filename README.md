@@ -35,28 +35,16 @@ Add this to your `pom.xml`
 </dependencies>
 ```
 
-Then start with the `Calculator` class.
-
-```java
-Calculator calculator = new Calculator();
-console.println(calculator.calculate(line).toString());
-```
-
-[`com.michaelsnowden.unit_converter.REPL`](https://github.com/MichaelSnowden/unit_converter/blob/master/src/main/java/com/michaelsnowden/unit_converter/REPL.java) is a good place to look for an example usage.
-
-If you want to add units (I haven't added them all), then try constructing the `Calculator` with your own `UnitsProvider`.
-
-Here is an example taken directly from a webiste I have which uses this repo.
+Then use the `Calculator` class. Here is an example taken directly from a webiste I have which uses this repo.
 
 ```java
 get("/calculate", (req, res) -> {
     try {
-        SymbolLookup symbolLookup = new SymbolLookupImpl();
         String expression = req.queryParams("expression");
         if (expression == null) {
             throw new IllegalArgumentException("Missing parameter 'expression'");
         }
-        Calculator calculator = new Calculator(symbolLookup);
+        Calculator calculator = new Calculator();
         return calculator.calculate(expression);
     } catch (Exception e) {
         e.printStackTrace();
