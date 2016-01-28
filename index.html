@@ -26,15 +26,15 @@
                     $("#result").val(data);
                 });
             });
-            $("#define").submit(function (event) {
-                event.preventDefault();
-                $("#defineResult").val("Loading...");
-                var key = $("#defineKey").val().trim();
-                var value = encodeURI($("#defineValue").val());
-                $.get("https://michael-snowden.herokuapp.com/define?key=" + key + "&value=" + value, function (data) {
-                    $("#defineResult").val(data);
-                });
-            });
+//            $("#define").submit(function (event) {
+//                event.preventDefault();
+//                $("#defineResult").val("Loading...");
+//                var key = $("#defineKey").val().trim();
+//                var value = encodeURI($("#defineValue").val());
+//                $.get("https://michael-snowden.herokuapp.com/define?key=" + key + "&value=" + value, function (data) {
+//                    $("#defineResult").val(data);
+//                });
+//            });
         });
     </script>
 </head>
@@ -55,28 +55,28 @@
         </ul>
     </header>
     <section>
-        <h2>Define a Symbol</h2>
+        <!--<h2>Define a Symbol</h2>-->
 
-        <form id="define" class="">
-            <div class="form-group">
-                <label for="defineKey" class="sr-only"></label>
-                <input id="defineKey" name="defineKey" type="text" class="form-control"
-                       placeholder="N">
-            </div>
-            <div class="form-group">
-                <label for="defineValue" class="sr-only"></label>
-                <input id="defineValue" name="defineValue" type="text" class="form-control"
-                       placeholder="kg m / s^2">
-            </div>
-            <div class="form-group">
-                <label for="defineResult" class="sr-only"></label>
-                <input id="defineResult" name="defineResult" type="text" class="form-control"
-                       disabled="true">
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+        <!--<form id="define" class="">-->
+            <!--<div class="form-group">-->
+                <!--<label for="defineKey" class="sr-only"></label>-->
+                <!--<input id="defineKey" name="defineKey" type="text" class="form-control"-->
+                       <!--placeholder="N">-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="defineValue" class="sr-only"></label>-->
+                <!--<input id="defineValue" name="defineValue" type="text" class="form-control"-->
+                       <!--placeholder="kg m / s^2">-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="defineResult" class="sr-only"></label>-->
+                <!--<input id="defineResult" name="defineResult" type="text" class="form-control"-->
+                       <!--disabled="true">-->
+            <!--</div>-->
+            <!--<button type="submit" class="btn btn-default">Submit</button>-->
+        <!--</form>-->
 
-        <br>
+        <!--<br>-->
 
         <h2>Evaluate an Expression</h2>
 
