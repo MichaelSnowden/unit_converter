@@ -79,6 +79,3 @@ $.get("https://michael-snowden.herokuapp.com/calculate?expression=" + expression
     console.log(data);
 });
 ```
-
-## Future Ideas
-API method for adding unit conversions
