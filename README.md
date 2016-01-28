@@ -50,41 +50,19 @@ Here is an example taken directly from a webiste I have which uses this repo.
 
 ```java
 get("/calculate", (req, res) -> {
-    Connection connection = null;
     try {
-        connection = getConnection();
-        Statement statement = connection.createStatement();
-        SymbolLookup symbolLookup = getSymbolLookup(statement);
+        SymbolLookup symbolLookup = new SymbolLookupImpl();
         String expression = req.queryParams("expression");
         if (expression == null) {
-            return "Missing parameter 'expression'";
+            throw new IllegalArgumentException("Missing parameter 'expression'");
         }
         Calculator calculator = new Calculator(symbolLookup);
         return calculator.calculate(expression);
-    } catch (SQLException e) {
+    } catch (Exception e) {
         e.printStackTrace();
-        return "An error occurred: " + e.getMessage();
+        return e.getMessage();
     }
 });
-
-private static SymbolLookup getSymbolLookup(final Statement statement) throws SQLException, IOException {
-    return new AbstractSymbolLookup() {
-        {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM map");
-            while (resultSet.next()) {
-                String key = resultSet.getString("key");
-                String value = resultSet.getString("value");
-                Calculator calculator = new Calculator(this);
-                Term term = calculator.calculate(value);
-                if (!map.containsKey(key)) {
-                    map.put(key, term);
-                } else {
-                    map.put(key, map.get(key).times(term));
-                }
-            }
-        }
-    };
-}
 ```
 
 ## REST API (cURL)
