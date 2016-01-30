@@ -97,7 +97,7 @@ public class Calculator {
     }
 
     private Term calculate(ArithmeticParser.StringContext context) {
-        return symbolLookup.lookup(context.getText());
+        return symbolLookup.get(context.getText());
     }
 
     private Term calculate(ArithmeticParser.FunctionContext context) {
