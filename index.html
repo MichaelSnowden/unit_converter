@@ -18,6 +18,15 @@
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
     <script>
         $(function () {
+            $.get("https://michael-snowden.herokuapp.com/getAvailableUnits", function (data) {
+                var map = JSON.parse(data);
+                for (var key in map) {
+                    if (map.hasOwnProperty(key)) {
+                        $("#availableUnits").append($("<li><b>" + key + "</b> : " + map[key] + "</li>"));
+                    }
+                }
+            });
+
             $("#calculate").submit(function (event) {
                 event.preventDefault();
                 var timer;
@@ -36,6 +45,12 @@
                     clearTimeout(timer);
                 });
             });
+
+            $("#toggle").click(function () {
+                $("#availableUnits").slideToggle();
+            });
+
+
 //            $("#define").submit(function (event) {
 //                event.preventDefault();
 //                $("#defineResult").val("Loading...");
@@ -101,8 +116,17 @@
                 <input id="result" name="result" type="text" class="form-control"
                        disabled="true">
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-success">Submit</button>
         </form>
+
+        <br>
+
+        <h2>Available Symbols
+            <button id="toggle" class="btn btn-sm btn-default">Toggle</button>
+        </h2>
+        <div id="availableUnits">
+
+        </div>
 
         <br>
 
