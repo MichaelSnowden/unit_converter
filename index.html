@@ -24,7 +24,9 @@
 
                 function load(message) {
                     $("#result").val(message);
-                    timer = setTimeout(load.bind(message + "."), 100);
+                    timer = setTimeout(function () {
+                        load(message + ".")
+                    }, 100);
                 }
 
                 load("Loading");
