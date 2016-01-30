@@ -20,10 +20,18 @@
         $(function () {
             $("#calculate").submit(function (event) {
                 event.preventDefault();
-                $("#result").val("Loading...");
+                var timer;
+
+                function load(message) {
+                    $("#result").val(message);
+                    timer = setTimeout(load.bind(message + "."), 100);
+                }
+
+                load("Loading");
                 var expression = encodeURI($("#expression").val());
                 $.get("https://michael-snowden.herokuapp.com/calculate?expression=" + expression, function (data) {
                     $("#result").val(data);
+                    clearTimeout(timer);
                 });
             });
 //            $("#define").submit(function (event) {
