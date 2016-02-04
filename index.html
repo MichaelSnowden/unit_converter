@@ -25,6 +25,7 @@
                         $("#availableUnits").append($("<li><b>" + key + "</b> : " + map[key] + "</li>"));
                     }
                 }
+                $("#availableUnitsHeader").show();
             });
 
             $("#calculate").submit(function (event) {
@@ -116,12 +117,12 @@
                 <input id="result" name="result" type="text" class="form-control"
                        disabled="true">
             </div>
-            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="submit" class="btn btn-primary">Calculate</button>
         </form>
 
         <br>
 
-        <h2>Available Symbols
+        <h2 id="availableUnitsHeader" style="display:none;">Available Symbols
             <button id="toggle" class="btn btn-sm btn-default">Toggle</button>
         </h2>
         <div id="availableUnits">
